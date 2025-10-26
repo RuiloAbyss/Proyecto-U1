@@ -5,11 +5,11 @@ const User = require('../models/user.model');
 const JWT_SECRET = process.env.JWT_SECRET || "1234";
 
 async function register(req, res) {
-    const { username, password} = req.body;
-    if (!username || !password){
-        return res.status(400).json({message:"Usuario o contraseña no pueden estar vacios"});
+    const { email, password, name, address} = req.body;
+    if (!email || !password || !name || !address) {
+        return res.status(400).json({message:"Los campos no pueden estar vacios"});
     }
-    const created = await User.createUser({ username, password })
+    const created = await User.createUser({ email, password , name, address});
     if(!created) {
         return res.status(409).json({message: "Este usuario ya existe"})
     }
@@ -17,12 +17,12 @@ async function register(req, res) {
 }
 
 async function login(req, res) {
-    const  {username, password } = req.body;
-    if(!username || !password){
-        return res.status(400).json({message:"Usuario o contraseña no pueden estar vacios"});
+    const  {email, password } = req.body;
+    if(!email || !password){
+        return res.status(400).json({message:"Correo o contraseña no pueden estar vacios"});
     }
-    const user = User.findByUserName(username);
-    if(!user){
+    const user = User.findByEmail(email);
+    if(!correo){
         return res.status(401).json({message:"Credenciales Inválidas"})
     }
     const match = await bcrypt.compare(password,user.password);
@@ -30,7 +30,7 @@ async function login(req, res) {
         return res.status.json(401).json({message: "Credenciales Inválidas"})
     }
 
-    const token = jwt.sign({id: user.id, username:username}, JWT_SECRET, {expiresIn:'10m'});
+    const token = jwt.sign({id: user.id, email:email}, JWT_SECRET, {expiresIn:'30m'});
     res.status(200).json({ token:token });
 }
 
