@@ -3,43 +3,43 @@ const bcrypt = require('bcryptjs');
 
 let products = [];
 
+function findAll(){
+    return products;
+}
+
 function findById(id){
     return products.find((p) => p.id === id) || null;
 }
 
-async function createProduct({
-    id_producto, nombre, brand, category, stock, prize, description, url_image 
-}){
+async function addProduct(data){
     const exist = products.find((p) => p.id_producto === id_producto);
     if(exist) return null;
     const product = {
         id: randomUUID(),
-        id_producto,
-        nombre,
-        brand,
-        category,
-        stock,
-        prize,
-        description,
-        url_image
+        name: data.name,
+        brand: data.brand || '',
+        category: data.category || '',
+        stock: data.stock || 0,
+        prize: data.prize || 0,
+        description: data.description || '',
+        url_image: data.url_image || ''
     };
     products.push(product);
     return product;
 }
 
-async function editProduct(id, {
-    id_producto, nombre, brand, category, stock, prize, description, url_image 
-}){
+async function updateProduct(id, data){
     const product = products.find((p) => p.id === id);
     if(!product) return null;
-    product.id_producto = id_producto || product.id_producto;
-    product.nombre = nombre || product.nombre;
-    product.brand = brand || product.brand;
-    product.category = category || product.category;
-    product.stock = stock || product.stock;
-    product.prize = prize || product.prize;
-    product.description = description || product.description;
-    product.url_image = url_image || product.url_image;
+    product.name = name || data.name;
+    product.brand = brand || data.brand;
+    product.category = category || data.category;
+    product.stock = stock || data.stock;
+    product.prize = prize || data.prize;
+    product.description = description || data.description;
+    product.url_image = url_image || data.url_image;
+
+    products.push(product);
     return product;
 }
 
@@ -50,4 +50,4 @@ async function deleteProduct(id){
     return true;
 }
 
-module.exports = { findById, createProduct, editProduct, deleteProduct};
+module.exports = { findAll, findById, addProduct, updateProduct, deleteProduct };
