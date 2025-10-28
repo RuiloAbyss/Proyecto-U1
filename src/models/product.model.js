@@ -35,7 +35,7 @@ async function addProduct(data){
         brand: data.brand || '',
         category: data.category || '',
         stock: data.stock || 0,
-        prize: data.prize || 0,
+        price: data.price || 0,
         description: data.description || '',
         url_image: data.url_image || ''
     };
@@ -51,7 +51,7 @@ async function updateProduct(id, data){
     product.brand = data.brand || product.brand;
     product.category = data.category || product.category;
     product.stock = data.stock !== undefined ? data.stock : product.stock; 
-    product.prize = data.prize !== undefined ? data.prize : product.prize; 
+    product.price = data.price !== undefined ? data.price : product.price; 
     product.description = data.description || product.description;
     product.url_image = data.url_image || product.url_image;
 
