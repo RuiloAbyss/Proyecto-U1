@@ -1,5 +1,8 @@
 const { randomUUID } = require('node:crypto')
 const bcrypt = require('bcryptjs');
+const { db } = require("../firebase");
+
+const usersCollection = db.collection("users");
 
 let users = [
     {
@@ -12,16 +15,21 @@ let users = [
     },
 ];
 
-function findById(id){
-    return users.find((u) => u.id === id) || null;
+async function findById(id){
+    const user = await usersCollection.doc(id).get();
+    if(!user.exists) return null;
+    return { id: user.id, ...user.data() };
 }
 
-function findByEmail(email){
-    return users.find((u) =>  u.email === email) || null;
+async function findByEmail(email){
+    const user = await usersCollection.where('email', '==', email).get();
+    if(user.empty) return null;
+    const doc = user.docs[0];
+    return { id: doc.id, ...doc.data() };
 }
 
 async function createUser({email, password, name, address}) {
-    const exiting = users.find((u) => u.email === email)
+    const exiting = await findByEmail(email);
     if(exiting) return null;
     const hashedPass = await bcrypt.hashSync(password, 10); //await hace que la función espere a complir la sentencia que engloba
     const user = {
@@ -32,24 +40,27 @@ async function createUser({email, password, name, address}) {
         role:'user',
         address:address
     };
-    users.push(user);
+    await usersCollection.doc(user.id).set(user);
     return{ id:user.id, email: user.email, name:user.name};
 }
 
 async function editUser(id, {email, password, name, address}){
-    const user = users.find((u) => u.id === id);
-    if(!user) return null;
-    user.email = email || user.email;
-    user.password = password ? await bcrypt.hashSync(password, 10) : user.password;
-    user.name = name || user.name;
-    user.address = address || user.address;
-    return { id:user.id, email: user.email, name:user.name};
-}
+    const doc = await usersCollection.doc(id).get();
+    if(!doc.exists) return null;
+    const updated = {
+        email: email ?? doc.data().email,
+        password: password ? await bcrypt.hashSync(password,10) : doc.data().password,
+        name: name ?? doc.data().name,
+        address: address ?? doc.data().address
+    };
+    await usersCollection.doc(id).update(updated);
+    return { id, ...updated };
+} 
 
 async function deleteUser(id){
-    const index = users.findIndex((u) => u.id === id);
-    if(index === -1) return null;
-    users.splice(index, 1);
+    const doc = await usersCollection.doc(id).get();
+    if(!doc.exists) return null;
+    await usersCollection.doc(id).delete();
     return true;
 }
 
