@@ -1,5 +1,8 @@
 const { randomUUID } = require('node:crypto')
 const bcrypt = require('bcryptjs');
+const { db } = require("../firebase");
+
+const usersCollection = db.collection("users");
 
 let users = [
     {//REMOVER CUANDO SE IMPLEMENTE EN FIREBASE
@@ -12,19 +15,17 @@ let users = [
     },
 ];
 
-function findById(id){
-    return users.find((u) => u.id === id) || null;
+async function findById(id){
+    const user = await usersCollection.doc(id).get();
+    if(!user.exists) return null;
+    return { id: user.id, ...user.data() };
 }
 
-function getAllUsers() {// DEBUG (BORRAR DESPUES)
-    return users.map(u => ({
-        id: u.id,
-        email: u.email,
-        password: u.password,
-        name: u.name,
-        role: u.role,
-        address: u.address
-    }));
+async function findByEmail(email){
+    const user = await usersCollection.where('email', '==', email).get();
+    if(user.empty) return null;
+    const doc = user.docs[0];
+    return { id: doc.id, ...doc.data() };
 }
 
 function findByEmail(email){
@@ -58,9 +59,9 @@ async function editUser(id, {email, password, name, address}){
 }
 
 async function deleteUser(id){
-    const index = users.findIndex((u) => u.id === id);
-    if(index === -1) return null;
-    users.splice(index, 1);
+    const doc = await usersCollection.doc(id).get();
+    if(!doc.exists) return null;
+    await usersCollection.doc(id).delete();
     return true;
 }
 
