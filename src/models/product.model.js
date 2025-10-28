@@ -1,10 +1,25 @@
 const { randomUUID } = require('node:crypto')
-const bcrypt = require('bcryptjs');
 
 let products = [];
 
-function findAll(){
-    return products;
+function findAll(filters = {}){
+    let filteredProducts = products;
+    
+    if (filters.category) {// Filtrado por categoría 
+        const categoryFilter = filters.category.toLowerCase();
+        filteredProducts = filteredProducts.filter(p => 
+            p.category && p.category.toLowerCase() === categoryFilter
+        );
+    }
+
+    if (filters.brand) {// Filtrado por marca
+        const brandFilter = filters.brand.toLowerCase();
+        filteredProducts = filteredProducts.filter(p => 
+            p.brand && p.brand.toLowerCase() === brandFilter
+        );
+    }
+
+    return filteredProducts;
 }
 
 function findById(id){
@@ -12,7 +27,7 @@ function findById(id){
 }
 
 async function addProduct(data){
-    const exist = products.find((p) => p.id_producto === id_producto);
+    const exist = products.find((p) => p.id === id); 
     if(exist) return null;
     const product = {
         id: randomUUID(),
@@ -20,7 +35,7 @@ async function addProduct(data){
         brand: data.brand || '',
         category: data.category || '',
         stock: data.stock || 0,
-        prize: data.prize || 0,
+        price: data.price || 0,
         description: data.description || '',
         url_image: data.url_image || ''
     };
@@ -31,15 +46,15 @@ async function addProduct(data){
 async function updateProduct(id, data){
     const product = products.find((p) => p.id === id);
     if(!product) return null;
-    product.name = name || data.name;
-    product.brand = brand || data.brand;
-    product.category = category || data.category;
-    product.stock = stock || data.stock;
-    product.prize = prize || data.prize;
-    product.description = description || data.description;
-    product.url_image = url_image || data.url_image;
 
-    products.push(product);
+    product.name = data.name || product.name;
+    product.brand = data.brand || product.brand;
+    product.category = data.category || product.category;
+    product.stock = data.stock !== undefined ? data.stock : product.stock; 
+    product.price = data.price !== undefined ? data.price : product.price; 
+    product.description = data.description || product.description;
+    product.url_image = data.url_image || product.url_image;
+
     return product;
 }
 

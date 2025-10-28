@@ -5,9 +5,9 @@ const { db } = require("../firebase");
 const usersCollection = db.collection("users");
 
 let users = [
-    {
+    {//REMOVER CUANDO SE IMPLEMENTE EN FIREBASE
         id: '@sa_j5l0bY8bXUuJ8Fh',
-        username: 'sa',
+        name: 'sa',
         password: '$2a$10$7qJ6r0vH6H9j5l0bY8bXUuJ8Fh8bXUuJ8Fh8bXUuJ8Fh8bXUuJ8Fh8bXUu', //hashed 'admin123'
         email: 'systemadmon@store.com',
         role: 'admin',
@@ -64,4 +64,4 @@ async function deleteUser(id){
     return true;
 }
 
-module.exports = { findById, findByEmail, createUser, editUser, deleteUser};
+module.exports = { findById, findByEmail, createUser, editUser, deleteUser };
