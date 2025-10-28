@@ -49,7 +49,7 @@ Para todas las rutas protegidas, incluya el token obtenido en el encabezado (`He
 
 ---
 
-## 🗺️ Listado Completo de Rutas
+## Listado Completo de Rutas
 
 | Módulo | Método | Ruta | Descripción | Autenticación |
 | :--- | :--- | :--- | :--- | :---: |
@@ -67,7 +67,7 @@ Para todas las rutas protegidas, incluya el token obtenido en el encabezado (`He
 
 ---
 
-## 🛠️ Detalle de Métodos y Parámetros
+## Detalle de Métodos y Parámetros
 
 ### Módulo: Autenticación (`/auth`)
 
