@@ -61,7 +61,6 @@ async function deleteUser(id){
 }
 
 module.exports = { findById, getAllUsers, createUser, editUser, deleteUser};
-];
 
 function findById(id){
     return users.find((u) => u.id === id) || null;

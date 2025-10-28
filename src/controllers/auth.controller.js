@@ -78,6 +78,7 @@ async function remove(req, res) { // DEBUG (BORRAR DESPUES)
 
 module.exports = {
     register,
+    login,
     getUsers,
     getUserById,
     edit,
