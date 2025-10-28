@@ -27,14 +27,41 @@ async function login(req, res) {
     }
     const match = await bcrypt.compare(password,user.password);
     if(!match){
-        return res.status(401).json({message: "Credenciales Inválidas"}) // Se corrige el orden de status().json()
+        return res.status(401).json({message: "Credenciales Inválidas"}) 
     }
 
     const token = jwt.sign({id: user.id, email:email}, JWT_SECRET, {expiresIn:'30m'});
     res.status(200).json({ token:token });
 }
 
+async function edit(req, res) { // DEBUG (BORRAR DESPUES)
+    const { id } = req.params;
+    const { email, password, name, address } = req.body;
+
+    const updated = await User.editUser(id, { email, password, name, address });
+
+    if (!updated) {
+        return res.status(404).json({ message: "Usuario no encontrado o no se pudo actualizar" });
+    }
+
+    res.status(200).json(updated);
+}
+
+async function remove(req, res) { // DEBUG (BORRAR DESPUES)
+    const { id } = req.params;
+
+    const deleted = await User.deleteUser(id);
+
+    if (!deleted) {
+        return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    res.status(204).send(); 
+}
+
 module.exports = {
     login,
-    register
+    register,
+    edit,
+    remove
 }
