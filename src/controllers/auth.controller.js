@@ -27,12 +27,29 @@ async function login(req, res) {
     }
     const match = await bcrypt.compare(password,user.password);
     if(!match){
-        return res.status(401).json({message: "Credenciales Inválidas"}) 
+        return res.status(401).json({message: "Credenciales Inválidas"}) // Se corrige el orden de status().json()
     }
 
     const token = jwt.sign({id: user.id, email:email}, JWT_SECRET, {expiresIn:'30m'});
     res.status(200).json({ token:token });
 }
+
+async function getUsers(req, res) { // DEBUG (BORRAR DESPUES)
+    const users = User.getAllUsers();
+    res.status(200).json(users);
+}
+
+async function getUserById(req, res) { // DEBUG (BORRAR DESPUES)
+    const { id } = req.params;
+    const user = User.findById(id);
+
+    if(!user) {
+        return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    const { password, ...userWithoutPass } = user;
+    res.status(200).json(userWithoutPass);
+}
+
 
 async function edit(req, res) { // DEBUG (BORRAR DESPUES)
     const { id } = req.params;
@@ -56,12 +73,13 @@ async function remove(req, res) { // DEBUG (BORRAR DESPUES)
         return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    res.status(204).send(); 
+    res.status(204).send();
 }
 
 module.exports = {
-    login,
     register,
+    getUsers,
+    getUserById,
     edit,
     remove
 }
