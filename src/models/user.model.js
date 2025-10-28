@@ -2,7 +2,7 @@ const { randomUUID } = require('node:crypto')
 const bcrypt = require('bcryptjs');
 
 let users = [
-    {
+    {//REMOVER CUANDO SE IMPLEMENTE EN FIREBASE
         id: '@sa_j5l0bY8bXUuJ8Fh',
         name: 'sa',
         password: '$2a$10$7qJ6r0vH6H9j5l0bY8bXUuJ8Fh8bXUuJ8Fh8bXUuJ8Fh8bXUuJ8Fh8bXUu', //hashed 'admin123'
