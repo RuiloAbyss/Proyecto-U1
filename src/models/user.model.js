@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 let users = [
     {
         id: '@sa_j5l0bY8bXUuJ8Fh',
-        username: 'sa',
+        name: 'sa',
         password: '$2a$10$7qJ6r0vH6H9j5l0bY8bXUuJ8Fh8bXUuJ8Fh8bXUuJ8Fh8bXUuJ8Fh8bXUu', //hashed 'admin123'
         email: 'systemadmon@store.com',
         role: 'admin',

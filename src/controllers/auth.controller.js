@@ -21,13 +21,13 @@ async function login(req, res) {
     if(!email || !password){
         return res.status(400).json({message:"Correo o contraseña no pueden estar vacios"});
     }
-    const user = User.findByEmail(email);
-    if(!correo){
+    const user = User.findByEmail(email); // No tenemos USER :( 
+    if(!user){ 
         return res.status(401).json({message:"Credenciales Inválidas"})
     }
     const match = await bcrypt.compare(password,user.password);
     if(!match){
-        return res.status.json(401).json({message: "Credenciales Inválidas"})
+        return res.status(401).json({message: "Credenciales Inválidas"}) // Se corrige el orden de status().json()
     }
 
     const token = jwt.sign({id: user.id, email:email}, JWT_SECRET, {expiresIn:'30m'});
